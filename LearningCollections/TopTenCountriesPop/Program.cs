@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace LearningCollections.TopTenCountriesPop
 {
@@ -11,25 +12,53 @@ namespace LearningCollections.TopTenCountriesPop
             CsvReader reader = new CsvReader(filePath);
 
             List<Country> countries = reader.ReadAllCountries();
-            Console.Write("enter number of countries to display ");
+            Console.Write("How many countries would you like to view? ");
+            bool validInput = int.TryParse(Console.ReadLine(), out int maxToShow);
 
-            bool inputIsint = int.TryParse(Console.ReadLine(), out int userInput);
-            if (!inputIsint || userInput <= 0)
+            // lists only first 10 countries
+            /*foreach(Country country in countries.Take(10))
             {
-                Console.WriteLine("You must type a +ve integer. Exiting...");
-                return;
+                Console.WriteLine( $"{PopulationFormatter.FormatPopulation(country.Population).PadLeft(15)}:" +
+                    $" {country.Name}");
+            }*/
+
+            // List the countries in ordered manner
+            /*if (!validInput || maxToShow <= 0)
+            {
+                Console.WriteLine("Kindly put a valid and positive input.");
             }
-            int maxToDisplay = userInput;
-            for (int i = 0; i < maxToDisplay; i++)
+            else
             {
-                if (i > 0 && (i % maxToDisplay == 0))
+                foreach (Country country in countries.OrderBy(x => x.Name).Take(maxToShow))
                 {
-                    Console.WriteLine("Hit return to continue, anything else to quit > ..");
-                    if (Console.ReadLine() != "")
-                        break;
+                    Console.WriteLine($"{PopulationFormatter.FormatPopulation(country.Population).PadLeft(15)}:" +
+                        $" {country.Name}");
                 }
-                Country country = countries[i];
-                Console.WriteLine( $"{i + 1}: {PopulationFormatter.FormatPopulation(country.Population).PadLeft(15)}:" +
+            }*/
+
+            // Display countries that doesnot have comma (",")
+            /*foreach (Country country in countries.Where(x=>!x.Name.Contains(",")).Take(maxToShow))
+            {
+                Console.WriteLine($"{PopulationFormatter.FormatPopulation(country.Population).PadLeft(15)}:" +
+                    $" {country.Name}");
+            }*/
+
+            // Using Linq query syntax
+            var filteredList = countries.Where(x => !x.Name.Contains(",")); // .Take(maxToShow);
+            var filteredList2 = from country in countries
+                                where !country.Name.Contains(";")
+                                select country;
+            foreach (Country country in filteredList2)
+            {
+                Console.WriteLine($"{PopulationFormatter.FormatPopulation(country.Population).PadLeft(15)}:" +
+                    $" {country.Name}");
+            }
+
+            Console.WriteLine();
+            // Show the items that where removed
+            foreach (Country country in countries.Where(x => x.Name.Contains(",")).Take(maxToShow))
+            {
+                Console.WriteLine($"{PopulationFormatter.FormatPopulation(country.Population).PadLeft(15)}:" +
                     $" {country.Name}");
             }
 
