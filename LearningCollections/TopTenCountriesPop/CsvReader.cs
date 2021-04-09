@@ -14,9 +14,9 @@ namespace LearningCollections.TopTenCountriesPop
 			this._csvFilePath = csvFilePath;
 		}
 
-		public Dictionary<string, Country> ReadAllCountries()
+		public List<Country> ReadAllCountries()
 		{
-			Dictionary<string, Country> countries = new Dictionary<string, Country>();
+			List<Country> countries = new List<Country>();
 
 			using (StreamReader sr = new StreamReader(_csvFilePath))
 			{
@@ -27,7 +27,7 @@ namespace LearningCollections.TopTenCountriesPop
 				while ((csvLine = sr.ReadLine()) != null)
 				{
 					Country country = ReadCountryFromCsvLine(csvLine);
-					countries.Add(country.Code, country);
+					countries.Add(country);
 				}
 			}
 
